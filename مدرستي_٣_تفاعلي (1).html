@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مدرستي ٣ - درس تفاعلي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a5276;
+      --secondary: #2e86c1;
+      --accent: #f39c12;
+      --green: #1e8449;
+      --light-bg: #eaf4fb;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 20px rgba(26,82,118,0.13);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #d6eaf8 0%, #fef9e7 100%);
+      min-height: 100vh;
+      padding: 20px 10px 40px;
+      color: #1a2a3a;
+    }
+
+    /* ===== HEADER ===== */
+    .school-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary);
+      color: white;
+      border-radius: var(--radius);
+      padding: 14px 24px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .school-header .logo { font-size: 1.35rem; font-weight: 900; letter-spacing: 0.5px; }
+    .school-header .logo span { color: var(--accent); }
+    .school-header .info { font-size: 0.95rem; opacity: 0.88; }
+
+    /* ===== INFO BAR ===== */
+    .info-bar {
+      background: white;
+      border-radius: var(--radius);
+      padding: 12px 22px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 30px;
+      box-shadow: var(--shadow);
+      border-right: 5px solid var(--accent);
+    }
+    .info-bar label { font-size: 0.85rem; color: #888; display: block; }
+    .info-bar span { font-size: 1rem; font-weight: 700; color: var(--primary); }
+
+    /* ===== LESSON TITLE ===== */
+    .lesson-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* ===== CONTROLS ===== */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 22px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .btn-primary { background: var(--secondary); color: white; }
+    .btn-primary:hover { background: var(--primary); transform: translateY(-1px); }
+    .btn-accent { background: var(--accent); color: white; }
+    .btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-green { background: var(--green); color: white; }
+    .btn-green:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    /* ===== DIALOGUE CARDS ===== */
+    .dialogue-section {
+      max-width: 780px;
+      margin: 0 auto 28px;
+    }
+    .dialogue-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      position: relative;
+    }
+    .dialogue-card:hover {
+      border-color: var(--secondary);
+      transform: translateX(-3px);
+      box-shadow: 0 6px 24px rgba(26,82,118,0.18);
+    }
+    .dialogue-card.active {
+      border-color: var(--accent);
+      background: #fffbf0;
+      box-shadow: 0 6px 28px rgba(243,156,18,0.18);
+    }
+    .dialogue-card.playing {
+      border-color: var(--green);
+      background: #eafaf1;
+      animation: pulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes pulse {
+      from { box-shadow: 0 4px 20px rgba(30,132,73,0.15); }
+      to   { box-shadow: 0 4px 28px rgba(30,132,73,0.35); }
+    }
+
+    .speaker-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 3px solid;
+    }
+    .speaker-nur  { background: #fadbd8; border-color: #e74c3c; }
+    .speaker-adam { background: #d5e8f7; border-color: #2e86c1; }
+
+    .card-content { flex: 1; }
+    .speaker-name {
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .name-nur  { color: #c0392b; }
+    .name-adam { color: #1a5276; }
+
+    .sentence-text {
+      font-size: 1.28rem;
+      font-weight: 700;
+      line-height: 1.7;
+      color: #1a2a3a;
+    }
+
+    .play-btn {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      background: var(--light-bg);
+      color: var(--secondary);
+    }
+    .play-btn:hover { background: var(--secondary); color: white; }
+    .dialogue-card.playing .play-btn { background: var(--green); color: white; }
+
+    /* ===== VOCAB ===== */
+    .vocab-section {
+      max-width: 780px;
+      margin: 0 auto 28px;
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+    }
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .vocab-card {
+      background: white;
+      border-radius: 14px;
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    .vocab-card:hover {
+      border-color: var(--secondary);
+      transform: translateY(-3px);
+    }
+    .vocab-card.playing { border-color: var(--green); background: #eafaf1; }
+    .vocab-emoji { font-size: 2rem; margin-bottom: 6px; }
+    .vocab-word {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.4;
+    }
+
+    /* ===== WORKBOOK ===== */
+    .workbook-section {
+      max-width: 780px;
+      margin: 0 auto 28px;
+    }
+    .activity-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      border-right: 5px solid var(--secondary);
+    }
+    .activity-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 14px;
+    }
+    .fill-blank {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .blank-input {
+      border: none;
+      border-bottom: 2.5px solid var(--accent);
+      width: 140px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: transparent;
+      text-align: center;
+      outline: none;
+      padding: 2px 4px;
+    }
+    .blank-input:focus { border-bottom-color: var(--secondary); }
+    .sentence-input {
+      width: 100%;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      direction: rtl;
+    }
+    .sentence-input:focus { border-color: var(--secondary); }
+    .word-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .chip {
+      background: var(--light-bg);
+      color: var(--primary);
+      border-radius: 50px;
+      padding: 4px 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid var(--secondary);
+      transition: all 0.15s;
+    }
+    .chip:hover { background: var(--secondary); color: white; }
+
+    /* ===== STATUS ===== */
+    .status-bar {
+      text-align: center;
+      color: var(--green);
+      font-size: 1rem;
+      font-weight: 700;
+      min-height: 24px;
+      margin-bottom: 10px;
+    }
+
+    /* ===== PROGRESS ===== */
+    .progress-bar-wrap {
+      max-width: 780px;
+      margin: 0 auto 20px;
+      background: #d5e8f7;
+      border-radius: 50px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      border-radius: 50px;
+      transition: width 0.4s;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .sentence-text { font-size: 1.1rem; }
+      .school-header .logo { font-size: 1.1rem; }
+      .vocab-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="school-header">
+    <div class="logo">🏫 المدرسة <span>الأمريكية</span> في البحرين</div>
+    <div class="info">الصف: الثالث</div>
+  </div>
+
+  <!-- INFO BAR -->
+  <div class="info-bar" style="max-width:780px; margin:0 auto 18px;">
+    <div><label>الاسم</label><span>.............................</span></div>
+    <div><label>التاريخ</label><span>.............................</span></div>
+  </div>
+
+  <!-- LESSON TITLE -->
+  <div class="lesson-title">🏠 مدرستي ٣</div>
+
+  <!-- STATUS -->
+  <div class="status-bar" id="statusBar">🔊 انقر على أي جملة لسماعها</div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="btn btn-primary" onclick="readAll()">▶ قراءة كل الحوار</button>
+    <button class="btn btn-accent" onclick="stopAll()">⏹ إيقاف</button>
+    <button class="btn btn-green" onclick="scrollTo({top:0,behavior:'smooth'})">⬆ للأعلى</button>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <!-- ===== DIALOGUE ===== -->
+  <div class="dialogue-section">
+    <div class="section-title">💬 الحوار</div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="صَبَاحُ الخَيرِ يا آدَم! أَينَ نَحنُ؟">
+      <div class="speaker-avatar speaker-nur">👧</div>
+      <div class="card-content">
+        <div class="speaker-name name-nur">نُور:</div>
+        <div class="sentence-text">صَبَاحُ الخَيرِ يا آدَم! ☀️ أَينَ نَحنُ؟</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="نَحنُ في المُختَبَرِ. هٰذِهِ مَادَّةُ العُلُومِ.">
+      <div class="speaker-avatar speaker-adam">👦</div>
+      <div class="card-content">
+        <div class="speaker-name name-adam">آدَم:</div>
+        <div class="sentence-text">نَحنُ في المُختَبَرِ 🔬. هٰذِهِ مَادَّةُ العُلُومِ 🔭.</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="أُحِبُّ العُلُومَ وَالفَنَّ!">
+      <div class="speaker-avatar speaker-nur">👧</div>
+      <div class="card-content">
+        <div class="speaker-name name-nur">نُور:</div>
+        <div class="sentence-text">أُحِبُّ العُلُومَ 🔬 وَالفَنَّ 🎨!</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="وَأَنَا أُحِبُّ الرِّيَاضِيَّاتِ وَالمُوسِيقَى.">
+      <div class="speaker-avatar speaker-adam">👦</div>
+      <div class="card-content">
+        <div class="speaker-name name-adam">آدَم:</div>
+        <div class="sentence-text">وَأَنَا أُحِبُّ الرِّيَاضِيَّاتِ ➕ وَالمُوسِيقَى 🎵.</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="مَن يُعَلِّمُنَا الرِّيَاضَةَ؟">
+      <div class="speaker-avatar speaker-nur">👧</div>
+      <div class="card-content">
+        <div class="speaker-name name-nur">نُور:</div>
+        <div class="sentence-text">مَن يُعَلِّمُنَا الرِّيَاضَةَ؟</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="المُعَلِّمُ في المَلعَبِ. هُوَ قَوِيٌّ وَمُبتَسِمٌ.">
+      <div class="speaker-avatar speaker-adam">👦</div>
+      <div class="card-content">
+        <div class="speaker-name name-adam">آدَم:</div>
+        <div class="sentence-text">المُعَلِّمُ في المَلعَبِ ⚽. هُوَ قَوِيٌّ 💪 وَمُبتَسِمٌ 😊.</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="وَأَينَ المُشرِفُ؟">
+      <div class="speaker-avatar speaker-nur">👧</div>
+      <div class="card-content">
+        <div class="speaker-name name-nur">نُور:</div>
+        <div class="sentence-text">وَأَينَ المُشرِفُ؟</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+
+    <div class="dialogue-card" onclick="speakCard(this)" data-text="المُشرِفُ في السَّاحَةِ، وَالمُوَظَّفُ الإِدَارِيُّ في المَكتَبِ.">
+      <div class="speaker-avatar speaker-adam">👦</div>
+      <div class="card-content">
+        <div class="speaker-name name-adam">آدَم:</div>
+        <div class="sentence-text">المُشرِفُ في السَّاحَةِ 🏃، وَالمُوَظَّفُ الإِدَارِيُّ في المَكتَبِ 🏢.</div>
+      </div>
+      <button class="play-btn" onclick="event.stopPropagation(); speakCard(this.parentElement)">▶</button>
+    </div>
+  </div>
+
+  <!-- ===== VOCAB ===== -->
+  <div class="vocab-section">
+    <div class="section-title">📚 المفردات</div>
+    <div class="vocab-grid" id="vocabGrid">
+      <div class="vocab-card" onclick="speakWord(this, 'مُعَلِّم')"><div class="vocab-emoji">👨‍🏫</div><div class="vocab-word">مُعَلِّم</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'فَن')"><div class="vocab-emoji">🎨</div><div class="vocab-word">فَنّ</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'مُوسِيقَى')"><div class="vocab-emoji">🎵</div><div class="vocab-word">مُوسِيقَى</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'رِيَاضِيَّات')"><div class="vocab-emoji">➕</div><div class="vocab-word">رِيَاضِيَّات</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'تَربِيَة رِيَاضِيَّة')"><div class="vocab-emoji">⚽</div><div class="vocab-word">تَربِيَة رِيَاضِيَّة</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'مُشرِف')"><div class="vocab-emoji">🏃</div><div class="vocab-word">مُشرِف</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'مُوَظَّف إِدَارِي')"><div class="vocab-emoji">🏢</div><div class="vocab-word">مُوَظَّف إِدَارِي</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'قَوِيّ')"><div class="vocab-emoji">💪</div><div class="vocab-word">قَوِيّ</div></div>
+      <div class="vocab-card" onclick="speakWord(this, 'مُبتَسِم')"><div class="vocab-emoji">😊</div><div class="vocab-word">مُبتَسِم</div></div>
+    </div>
+  </div>
+
+  <!-- ===== WORKBOOK ===== -->
+  <div class="workbook-section">
+    <div class="section-title">✏️ كتاب التدريبات</div>
+
+    <!-- Activity 1 -->
+    <div class="activity-card">
+      <div class="activity-title">✅ النشاط ١: أكمل الجمل</div>
+
+      <div class="fill-blank">
+        1️⃣ أُحِبُّ
+        <input class="blank-input" type="text" placeholder="اكتب هنا" />
+        <span>🎨</span>
+      </div>
+      <div class="fill-blank">
+        2️⃣ نَلعَبُ بـ
+        <input class="blank-input" type="text" placeholder="اكتب هنا" />
+        <span>⚽</span>
+      </div>
+      <div class="fill-blank">
+        3️⃣ المُوَظَّفُ في
+        <input class="blank-input" type="text" placeholder="اكتب هنا" />
+        <span>🏢</span>
+      </div>
+    </div>
+
+    <!-- Activity 2 -->
+    <div class="activity-card">
+      <div class="activity-title">🔤 النشاط ٢: كوّن جملة</div>
+
+      <div style="margin-bottom:18px;">
+        <div style="font-size:1rem; font-weight:700; color:#555; margin-bottom:8px;">1️⃣ رتّب الكلمات: (أَنَا – أُحِبُّ – الفَنَّ)</div>
+        <div class="word-chips">
+          <span class="chip" onclick="addWord('s1', 'أَنَا')">أَنَا</span>
+          <span class="chip" onclick="addWord('s1', 'أُحِبُّ')">أُحِبُّ</span>
+          <span class="chip" onclick="addWord('s1', 'الفَنَّ')">الفَنَّ</span>
+        </div>
+        <input class="sentence-input" id="s1" type="text" placeholder="اضغط على الكلمات أو اكتب ➡️" />
+      </div>
+
+      <div>
+        <div style="font-size:1rem; font-weight:700; color:#555; margin-bottom:8px;">2️⃣ رتّب الكلمات: (في – المَلعَبِ – نَلعَبُ)</div>
+        <div class="word-chips">
+          <span class="chip" onclick="addWord('s2', 'نَلعَبُ')">نَلعَبُ</span>
+          <span class="chip" onclick="addWord('s2', 'في')">في</span>
+          <span class="chip" onclick="addWord('s2', 'المَلعَبِ')">المَلعَبِ</span>
+        </div>
+        <input class="sentence-input" id="s2" type="text" placeholder="اضغط على الكلمات أو اكتب ➡️" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== SPEECH =====
+    let currentUtterance = null;
+    let allCards = [];
+    let currentIndex = -1;
+
+    function speak(text, onEnd) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'ar-SA';
+      utter.rate = 0.85;
+      utter.pitch = 1;
+      // Prefer Arabic voice
+      const voices = window.speechSynthesis.getVoices();
+      const arVoice = voices.find(v => v.lang.startsWith('ar'));
+      if (arVoice) utter.voice = arVoice;
+      utter.onend = onEnd || null;
+      currentUtterance = utter;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function speakCard(card) {
+      document.querySelectorAll('.dialogue-card').forEach(c => c.classList.remove('playing'));
+      card.classList.add('playing');
+      const text = card.dataset.text;
+      document.getElementById('statusBar').textContent = '🔊 يقرأ: ' + text.substring(0, 30) + '...';
+      speak(text, () => {
+        card.classList.remove('playing');
+        document.getElementById('statusBar').textContent = '✅ انتهت القراءة';
+      });
+    }
+
+    function speakWord(card, word) {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('playing'));
+      card.classList.add('playing');
+      document.getElementById('statusBar').textContent = '🔊 الكلمة: ' + word;
+      speak(word, () => {
+        card.classList.remove('playing');
+        document.getElementById('statusBar').textContent = '✅ انتهت القراءة';
+      });
+    }
+
+    function readAll() {
+      const cards = Array.from(document.querySelectorAll('.dialogue-card'));
+      let i = 0;
+      const total = cards.length;
+      function next() {
+        if (i >= total) {
+          document.querySelectorAll('.dialogue-card').forEach(c => c.classList.remove('playing'));
+          document.getElementById('progressFill').style.width = '100%';
+          document.getElementById('statusBar').textContent = '🎉 انتهى الحوار كاملاً!';
+          return;
+        }
+        document.querySelectorAll('.dialogue-card').forEach(c => c.classList.remove('playing'));
+        const card = cards[i];
+        card.classList.add('playing');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('progressFill').style.width = ((i + 1) / total * 100) + '%';
+        document.getElementById('statusBar').textContent = `🔊 جملة ${i + 1} من ${total}`;
+        speak(card.dataset.text, () => { i++; next(); });
+      }
+      next();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      document.querySelectorAll('.dialogue-card').forEach(c => c.classList.remove('playing'));
+      document.getElementById('statusBar').textContent = '⏹ توقفت القراءة';
+      document.getElementById('progressFill').style.width = '0%';
+    }
+
+    function addWord(inputId, word) {
+      const input = document.getElementById(inputId);
+      input.value = input.value ? input.value + ' ' + word : word;
+    }
+
+    // Load voices on iOS/Safari
+    window.speechSynthesis.onvoiceschanged = () => {};
+  </script>
+</body>
+</html>
